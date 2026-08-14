@@ -3,10 +3,19 @@ from django.urls import include, path
 
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+
+    path(
+        "admin/",
+        admin.site.urls
+    ),
 
     path(
         "",
         include("users.urls")
+    ),
+
+    path(
+        "qr/",
+        include("qr_system.urls")
     ),
 ]

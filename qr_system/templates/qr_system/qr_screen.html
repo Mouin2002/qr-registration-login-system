@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>QR Authentication</title>
+  </head>
+
+  <body>
+    <h1>QR Authentication System</h1>
+
+    <h2 id="qr-title">Register</h2>
+
+    <img
+      id="qr-image"
+      src="data:image/png;base64,{{ register_qr_base64 }}"
+      alt="QR Code"
+      width="300"
+      height="300"
+    />
+
+    <p id="qr-message">Scan this QR code with your mobile phone to register.</p>
+
+    <p>
+      Status:
+      <strong id="qr-status"> {{ qr_session.status }} </strong>
+    </p>
+
+    <script>
+      const statusUrl = "{{ status_url }}";
+
+      const registerQr = "data:image/png;base64,{{ register_qr_base64 }}";
+
+      const loginQr = "data:image/png;base64,{{ login_qr_base64 }}";
+
+      const qrImage = document.getElementById("qr-image");
+
+      const qrTitle = document.getElementById("qr-title");
+
+      const qrMessage = document.getElementById("qr-message");
+
+      const qrStatus = document.getElementById("qr-status");
+
+      function showRegisterQR() {
+        qrTitle.textContent = "Register";
+
+        qrImage.src = registerQr;
+
+        qrMessage.textContent =
+          "Scan this QR code with your mobile phone to register.";
+
+        qrStatus.textContent = "REGISTER";
+      }
+
+      function showLoginQR() {
+        qrTitle.textContent = "Login";
+
+        qrImage.src = loginQr;
+
+        qrMessage.textContent =
+          "Registration completed. Scan this QR code to login.";
+
+        qrStatus.textContent = "LOGIN";
+      }
+
+      async function checkQRStatus() {
+        try {
+          const response = await fetch(statusUrl);
+
+          if (!response.ok) {
+            console.error("QR status request failed:", response.status);
+
+            return;
+          }
+
+          const data = await response.json();
+
+          console.log("QR status:", data.status);
+
+          if (data.status === "REGISTER") {
+            showRegisterQR();
+          }
+
+          if (data.status === "LOGIN") {
+            showLoginQR();
+          }
+        } catch (error) {
+          console.error("QR status error:", error);
+        }
+      }
+
+      // Run immediately
+      checkQRStatus();
+
+      // Check every 2 seconds
+      setInterval(checkQRStatus, 2000);
+    </script>
+  </body>
+</html>

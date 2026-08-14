@@ -1,21 +1,27 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.contrib.auth import get_user_model
-from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model,authenticate
+from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import RegistrationForm
+from qr_system.models import QRSession
 
 
 User = get_user_model()
 
 
-def register(request):
+def register(request, session_key):
+
+    qr_session = get_object_or_404(
+        QRSession,
+        session_key=session_key,
+        status="REGISTER"
+    )
 
     if request.method == "POST":
+
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
+
             user = form.save(commit=False)
 
             user.set_password(
@@ -23,6 +29,9 @@ def register(request):
             )
 
             user.save()
+
+            qr_session.status = "LOGIN"
+            qr_session.save()
 
             return redirect("register_success")
 
@@ -32,12 +41,84 @@ def register(request):
     return render(
         request,
         "users/register.html",
-        {"form": form}
+        {
+            "form": form,
+        }
     )
 
 
 def register_success(request):
+
     return render(
         request,
         "users/register_success.html"
+    )
+
+def login_view(request, session_key):
+
+    qr_session = get_object_or_404(
+        QRSession,
+        session_key=session_key,
+        status="LOGIN"
+    )
+
+    error_message = None
+
+    if request.method == "POST":
+
+        email = request.POST.get("email", "").strip().lower()
+        password = request.POST.get("password", "")
+
+        if not email or not password:
+
+            error_message = "Email and password are required."
+
+        else:
+
+            user = authenticate(
+                request,
+                username=email,
+                password=password
+            )
+
+            if user is not None:
+
+                request.session["user_id"] = user.id
+
+                return redirect(
+                    "login_success"
+                )
+
+            error_message = "Invalid email or password."
+
+    return render(
+        request,
+        "users/login.html",
+        {
+            "qr_session": qr_session,
+            "error_message": error_message,
+        }
+    )
+
+def login_success(request):
+
+    user_id = request.session.get("user_id")
+
+    if not user_id:
+
+        return redirect(
+            "qr_screen"
+        )
+
+    user = get_object_or_404(
+        User,
+        id=user_id
+    )
+
+    return render(
+        request,
+        "users/login_success.html",
+        {
+            "user": user,
+        }
     )
