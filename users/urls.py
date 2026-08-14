@@ -24,8 +24,8 @@ urlpatterns = [
     ),
 
     path(
-        "login/success/",
-        views.login_success,
-        name="login_success"
+        "dashboard/",
+        views.dashboard,
+        name="dashboard"
     ),
 ]
