@@ -15,7 +15,6 @@ def register(request, session_key):
         session_key=session_key
     )
 
-    # Check whether QR has expired
     if qr_session.is_expired():
 
         qr_session.status = "EXPIRED"
@@ -32,8 +31,6 @@ def register(request, session_key):
             "users/qr_expired.html"
         )
 
-    # Registration is allowed only when
-    # the QR is in REGISTER state.
     if qr_session.status != "REGISTER":
 
         return render(
@@ -59,8 +56,6 @@ def register(request, session_key):
 
             user.save()
 
-            # Registration is complete.
-            # Change this QR session to LOGIN.
             qr_session.status = "LOGIN"
 
             qr_session.save(
@@ -102,7 +97,6 @@ def login_view(request, session_key):
         session_key=session_key
     )
 
-    # Check QR expiration
     if qr_session.is_expired():
 
         qr_session.status = "EXPIRED"
@@ -119,8 +113,7 @@ def login_view(request, session_key):
             "users/qr_expired.html"
         )
 
-    # Login is allowed only when
-    # QR is in LOGIN state.
+    # Only LOGIN QR can be used.
     if qr_session.status != "LOGIN":
 
         return render(
@@ -130,7 +123,6 @@ def login_view(request, session_key):
 
     error_message = None
 
-
     if request.method == "POST":
 
         email = request.POST.get(
@@ -138,19 +130,16 @@ def login_view(request, session_key):
             ""
         ).strip().lower()
 
-
         password = request.POST.get(
             "password",
             ""
         )
-
 
         if not email or not password:
 
             error_message = (
                 "Email and password are required."
             )
-
 
         else:
 
@@ -160,20 +149,28 @@ def login_view(request, session_key):
                 password=password
             )
 
-
             if user is not None:
 
+                # Create Django session.
                 request.session["user_id"] = user.id
+
+                # Make this QR session single-use.
+                qr_session.status = "COMPLETED"
+
+                qr_session.save(
+                    update_fields=[
+                        "status",
+                        "updated_at"
+                    ]
+                )
 
                 return redirect(
                     "dashboard"
                 )
 
-
             error_message = (
                 "Invalid email or password."
             )
-
 
     return render(
         request,
@@ -191,19 +188,16 @@ def dashboard(request):
         "user_id"
     )
 
-
     if not user_id:
 
         return redirect(
             "qr_screen"
         )
 
-
     user = get_object_or_404(
         User,
         id=user_id
     )
-
 
     return render(
         request,

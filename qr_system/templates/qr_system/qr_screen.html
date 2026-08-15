@@ -70,6 +70,17 @@
         qrStatus.textContent = "LOGIN";
       }
 
+      function showCompleted() {
+        qrTitle.textContent = "Login Successful";
+
+        qrImage.style.display = "none";
+
+        qrMessage.textContent =
+          "Login completed. This QR session can no longer be used.";
+
+        qrStatus.textContent = "COMPLETED";
+      }
+
       function showExpiredQR() {
         qrTitle.textContent = "QR Expired";
 
@@ -99,6 +110,8 @@
             showRegisterQR();
           } else if (data.status === "LOGIN") {
             showLoginQR();
+          } else if (data.status === "COMPLETED") {
+            showCompleted();
           } else if (data.status === "EXPIRED") {
             showExpiredQR();
           }
@@ -107,10 +120,8 @@
         }
       }
 
-      // Check immediately
       checkQRStatus();
 
-      // Check every 2 seconds
       setInterval(checkQRStatus, 2000);
     </script>
   </body>

@@ -9,6 +9,7 @@ class QRSession(models.Model):
     STATUS_CHOICES = [
         ("REGISTER", "Register"),
         ("LOGIN", "Login"),
+        ("COMPLETED", "Completed"),
         ("EXPIRED", "Expired"),
     ]
 
@@ -45,4 +46,5 @@ class QRSession(models.Model):
         return timezone.now() >= self.expires_at
 
     def __str__(self):
+
         return f"{self.session_key} - {self.status}"
