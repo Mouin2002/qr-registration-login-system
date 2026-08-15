@@ -18,5 +18,10 @@
     <p>Phone: {{ user.phone }}</p>
 
     <p>You are successfully logged in.</p>
+    <br />
+
+    <a href="{% url 'logout' %}">
+      <button>Logout</button>
+    </a>
   </body>
 </html>

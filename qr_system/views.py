@@ -1,6 +1,7 @@
 import base64
 from io import BytesIO
-
+from datetime import timedelta
+from django.utils import timezone
 import qrcode
 
 from django.conf import settings
@@ -24,7 +25,8 @@ def generate_qr_base64(data):
 def qr_screen(request):
 
     qr_session = QRSession.objects.create(
-        status="REGISTER"
+        status="REGISTER",
+        expires_at=timezone.now() + timedelta(minutes=5)
     )
 
     register_url = (
@@ -69,6 +71,11 @@ def qr_status(request, session_key):
         QRSession,
         session_key=session_key
     )
+
+    if qr_session.is_expired():
+
+        qr_session.status = "EXPIRED"
+        qr_session.save(update_fields=["status"])
 
     return JsonResponse({
         "status": qr_session.status

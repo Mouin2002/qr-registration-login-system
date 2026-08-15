@@ -25,6 +25,7 @@
 
     <p>
       Status:
+
       <strong id="qr-status"> {{ qr_session.status }} </strong>
     </p>
 
@@ -46,6 +47,8 @@
       function showRegisterQR() {
         qrTitle.textContent = "Register";
 
+        qrImage.style.display = "block";
+
         qrImage.src = registerQr;
 
         qrMessage.textContent =
@@ -57,12 +60,25 @@
       function showLoginQR() {
         qrTitle.textContent = "Login";
 
+        qrImage.style.display = "block";
+
         qrImage.src = loginQr;
 
         qrMessage.textContent =
           "Registration completed. Scan this QR code to login.";
 
         qrStatus.textContent = "LOGIN";
+      }
+
+      function showExpiredQR() {
+        qrTitle.textContent = "QR Expired";
+
+        qrImage.style.display = "none";
+
+        qrMessage.textContent =
+          "This QR session has expired. Please refresh the page to generate a new QR.";
+
+        qrStatus.textContent = "EXPIRED";
       }
 
       async function checkQRStatus() {
@@ -81,17 +97,17 @@
 
           if (data.status === "REGISTER") {
             showRegisterQR();
-          }
-
-          if (data.status === "LOGIN") {
+          } else if (data.status === "LOGIN") {
             showLoginQR();
+          } else if (data.status === "EXPIRED") {
+            showExpiredQR();
           }
         } catch (error) {
-          console.error("QR status error:", error);
+          console.error("QR status check failed:", error);
         }
       }
 
-      // Run immediately
+      // Check immediately
       checkQRStatus();
 
       // Check every 2 seconds
