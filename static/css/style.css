@@ -465,3 +465,35 @@ body {
     color: #4b5563;
     line-height: 1.6;
 }
+
+/* =========================
+   FORM VALIDATION
+   ========================= */
+
+.field-error {
+    color: #dc2626;
+
+    font-size: 13px;
+
+    margin-top: 6px;
+
+    line-height: 1.4;
+}
+
+.form-group input:invalid {
+    border-color: #d1d5db;
+}
+
+.error-message {
+    background: #fee2e2;
+
+    color: #991b1b;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    margin-bottom: 18px;
+
+    font-size: 14px;
+}

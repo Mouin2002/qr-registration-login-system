@@ -34,7 +34,7 @@ def qr_screen(request):
         status="REGISTER",
         expires_at=(
             timezone.now()
-            + timedelta(minutes=5)
+            + timedelta(minutes=3)
         )
     )
 

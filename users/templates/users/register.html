@@ -17,8 +17,54 @@
       <div class="form-card">
         <h1>Create Account</h1>
 
+        <p class="login-subtitle">Register your account</p>
+
         <form method="POST">
-          {% csrf_token %} {{ form.as_p }}
+          {% csrf_token %}
+
+          <!-- NAME -->
+
+          <div class="form-group">
+            <label for="id_name"> Name </label>
+
+            {{ form.name }} {{ form.name.errors }}
+          </div>
+
+          <!-- EMAIL -->
+
+          <div class="form-group">
+            <label for="id_email"> Email </label>
+
+            {{ form.email }} {{ form.email.errors }}
+          </div>
+
+          <!-- PHONE -->
+
+          <div class="form-group">
+            <label for="id_phone"> Phone </label>
+
+            {{ form.phone }} {{ form.phone.errors }}
+          </div>
+
+          <!-- PASSWORD -->
+
+          <div class="form-group">
+            <label for="id_password"> Password </label>
+
+            {{ form.password }} {{ form.password.errors }}
+          </div>
+
+          <!-- CONFIRM PASSWORD -->
+
+          <div class="form-group">
+            <label for="id_confirm_password"> Confirm Password </label>
+
+            {{ form.confirm_password }} {{ form.confirm_password.errors }}
+          </div>
+
+          <!-- GENERAL ERRORS -->
+
+          {{ form.non_field_errors }}
 
           <button type="submit" class="btn">Register</button>
         </form>
