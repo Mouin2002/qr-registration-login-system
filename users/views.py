@@ -207,7 +207,6 @@ def dashboard(request):
         }
     )
 
-
 def logout_view(request):
 
     request.session.flush()
