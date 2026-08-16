@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -5,14 +7,22 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>QR Expired</title>
+    <title>QR Code Expired</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
 
   <body>
-    <h1>QR Code Expired</h1>
+    <div class="form-page">
+      <div class="form-card expired-card">
+        <div class="expired-icon">!</div>
 
-    <p>This QR code is no longer valid.</p>
+        <h1>QR Code Expired</h1>
 
-    <p>Please scan a new QR code from the laptop.</p>
+        <p>This QR code is no longer valid.</p>
+
+        <p>Please scan a new QR code from the laptop.</p>
+      </div>
+    </div>
   </body>
 </html>

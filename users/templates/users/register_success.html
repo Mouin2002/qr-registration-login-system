@@ -1,15 +1,28 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>Registration Successful</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
 
   <body>
-    <h1>Registration Successful!</h1>
+    <div class="form-page">
+      <div class="form-card success-card">
+        <div class="success-icon">✓</div>
 
-    <p>Your account has been created successfully.</p>
+        <h1>Registration Successful!</h1>
+
+        <p>Your account has been created successfully.</p>
+
+        <p>Now you can login using the Login QR displayed on the laptop.</p>
+      </div>
+    </div>
   </body>
 </html>

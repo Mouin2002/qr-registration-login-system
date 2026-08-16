@@ -1,3 +1,5 @@
+{% load static %}
+
 <!doctype html>
 <html lang="en">
   <head>
@@ -6,28 +8,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <title>QR Authentication</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
   </head>
 
   <body>
-    <h1>QR Authentication System</h1>
+    <div class="qr-page">
+      <div class="qr-card">
+        <h1>QR Authentication</h1>
 
-    <h2 id="qr-title">Register</h2>
+        <p class="qr-subtitle">Scan the QR code with your mobile phone</p>
 
-    <img
-      id="qr-image"
-      src="data:image/png;base64,{{ register_qr_base64 }}"
-      alt="QR Code"
-      width="300"
-      height="300"
-    />
+        <h2 id="qr-title">Register</h2>
 
-    <p id="qr-message">Scan this QR code with your mobile phone to register.</p>
+        <img
+          id="qr-image"
+          class="qr-image"
+          src="data:image/png;base64,{{ register_qr_base64 }}"
+          alt="QR Code"
+        />
 
-    <p>
-      Status:
+        <p id="qr-message" class="qr-message">
+          Scan this QR code with your mobile phone to register.
+        </p>
 
-      <strong id="qr-status"> {{ qr_session.status }} </strong>
-    </p>
+        <div class="status">
+          Status:
+
+          <strong id="qr-status"> {{ qr_session.status }} </strong>
+        </div>
+      </div>
+    </div>
 
     <script>
       const statusUrl = "{{ status_url }}";
@@ -82,12 +93,12 @@
       }
 
       function showExpiredQR() {
-        qrTitle.textContent = "QR Expired";
+        qrTitle.textContent = "QR Code Expired";
 
         qrImage.style.display = "none";
 
         qrMessage.textContent =
-          "This QR session has expired. Please refresh the page to generate a new QR.";
+          "This QR code is no longer valid. Please refresh the page.";
 
         qrStatus.textContent = "EXPIRED";
       }
@@ -97,14 +108,10 @@
           const response = await fetch(statusUrl);
 
           if (!response.ok) {
-            console.error("QR status request failed:", response.status);
-
             return;
           }
 
           const data = await response.json();
-
-          console.log("QR status:", data.status);
 
           if (data.status === "REGISTER") {
             showRegisterQR();
